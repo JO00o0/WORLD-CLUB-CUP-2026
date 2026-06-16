@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أساطير كأس العالم • World Cup Legends</title>
+<style>
+/* ═══ DESIGN SYSTEM & VARIABLES (Concept 3) ═══ */
+:root {
+  --bg-main: #050505;
+  --bg-card: rgba(18, 18, 18, 0.65);
+  --bg-card-hover: rgba(26, 26, 26, 0.85);
+  --border-color: rgba(230, 198, 135, 0.15);
+  --border-hover: rgba(230, 198, 135, 0.4);
+  
+  --gold-primary: #E6C687;
+  --gold-secondary: #BFA163;
+  --gold-glow: rgba(230, 198, 135, 0.25);
+  
+  --text-primary: #F5F5F7;
+  --text-muted: #A3A8B3;
+  --text-dim: #6E737A;
+  
+  --radius-lg: 16px;
+  --radius-md: 10px;
+  --ease-main: cubic-bezier(0.16, 1, 0.3, 1);
+  --tr: 0.5s var(--ease-main);
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--bg-main);
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'SF Pro Display', -apple-system, 'Segoe UI', 'Roboto', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+[lang="en"] body {
+  font-family: 'Times New Roman', Times, serif;
+}
+
+/* ═══ SCROLL PROGRESS LINE ═══ */
+#progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0;
+  z-index: 10000;
+  background: linear-gradient(90deg, var(--gold-secondary), var(--gold-primary), var(--gold-secondary));
+  box-shadow: 0 0 8px var(--gold-glow);
+}
+
+/* ═══ SCREEN: LANGUAGE SELECTION ═══ */
+#screen-lang {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0d1117 0%, var(--bg-main) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9000;
+  gap: 40px;
+  padding: 30px;
+}
+
+.lang-trophy {
+  font-size: 5.5rem;
+  animation: floatGold 4s var(--ease-main) infinite alternate;
+  filter: drop-shadow(0 0 30px var(--gold-glow));
+}
+
+@keyframes floatGold {
+  from { transform: translateY(0) rotate(-2deg); }
+  to { transform: translateY(-15px) rotate(2deg); }
+}
+
+#screen-lang h1 {
+  color: var(--text-primary);
+  font-size: clamp(1.8rem, 5vw, 3rem);
+  font-weight: 300;
+  text-align: center;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+#screen-lang h1 span {
+  color: var(--gold-primary);
+  font-weight: 700;
+  text-shadow: 0 0 30px var(--gold-glow);
+}
+
+#screen-lang p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-top: -20px;
+}
+
+.lang-btns {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lang-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  padding: 16px 44px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: var(--tr);
+  font-family: inherit;
+  backdrop-filter: blur(10px);
+}
+
+.lang-btn:hover {
+  border-color: var(--gold-primary);
+  color: var(--bg-main);
+  background: var(--gold-primary);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px var(--gold-glow);
+}
+
+/* ═══ SCREEN: INTRO ANIMATION ═══ */
+#screen-intro {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-main);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 8999;
+}
+
+#screen-intro.active { display: flex; }
+
+#ball-wrap {
+  width: 100px;
+  height: 100px;
+  opacity: 0;
+  transform-origin: center;
+}
+
+#ball-wrap.go {
+  opacity: 1;
+  animation: ballBlast 1.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+
+@keyframes ballBlast {
+  0% { transform: scale(0.05) rotate(0deg); }
+  30% { transform: scale(0.2) rotate(180deg); }
+  65% { transform: scale(0.8) rotate(360deg); opacity: 1; }
+  100% { transform: scale(50) rotate(720deg); opacity: 0; }
+}
+
+#flash {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9001;
+}
+
+#flash.run { animation: flashExplode 0.6s ease-out forwards; animation-delay: 1.4s; }
+
+@keyframes flashExplode {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ═══ MAIN MUSEUM INTERFACE ═══ */
+#main { display: none; min-height: 100vh; }
+#main.show { display: block; animation: UIReveal 1s var(--ease-main) forwards; }
+
+@keyframes UIReveal {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ═══ NAVIGATION BAR ═══ */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(5, 5, 5, 0.85);
+  border-bottom: 1px solid var(--border-color);
+  height: 76px;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(20px);
+  transition: var(--tr);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.nav-trophy {
+  font-size: 1.8rem;
+  filter: drop-shadow(0 0 8px var(--gold-glow));
+  transition: transform 0.3s ease;
+}
+
+.nav-brand:hover .nav-trophy {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.nav-title {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.nav-right-container {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 36px;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold-primary);
+  transition: width 0.3s ease;
+}
+
+[dir="rtl"] .nav-links a::after {
+  left: auto;
+  right: 0;
+}
+
+.nav-links a:hover { color: var(--gold-primary); }
+.nav-links a:hover::after { width: 100%; }
+
+/* Ambient Music Widget Toggle Style */
+.bg-music-widget {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(230, 198, 135, 0.08);
+  border: 1px solid var(--border-color);
+  padding: 6px 14px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: var(--tr);
+  user-select: none;
+}
+
+.bg-music-widget:hover {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 10px var(--gold-glow);
+}
+
+.music-wave-bar-container {
+  display: flex;
+  gap: 3px;
+  align-items: flex-end;
+  height: 12px;
+  width: 17px;
+}
+
+.music-bar {
+  width: 2px;
+  height: 100%;
+  background: var(--gold-primary);
+  transform-origin: bottom;
+  animation: ambientWave 1.2s ease-in-out infinite alternate;
+  animation-play-state: paused;
+}
+
+.music-bar:nth-child(1) { animation-delay: 0.1s; height: 40%; }
+.music-bar:nth-child(2) { animation-delay: 0.4s; height: 100%; }
+.music-bar:nth-child(3) { animation-delay: 0.2s; height: 70%; }
+
+.bg-music-widget.playing .music-bar {
+  animation-play-state: running;
+}
+
+.music-widget-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@media(max-width: 768px) {
+  .nav-links { display: none; }
+  .navbar { padding: 0 24px; }
+}
+
+/* ═══ HERO EXHIBIT ═══ */
+.hero {
+  position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 24px;
+  overflow: hidden;
+  background: 
+    linear-gradient(180deg, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.95) 100%),
+    url('assets/images/stadium.jpg') center/cover no-repeat;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 40%, rgba(230, 198, 135, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-inner { position: relative; z-index: 5; max-width: 900px; }
+
+.eyebrow {
+  font-size: 0.8rem;
+  letter-spacing: 6px;
+  color: var(--gold-secondary);
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.hero-h1 {
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.15;
+  background: linear-gradient(180deg, #ffffff 30%, var(--gold-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 4px 20px rgba(0,0,0,0.6));
+}
+
+.hero-sub {
+  color: var(--text-muted);
+  font-size: clamp(1rem, 2vw, 1.3rem);
+  max-width: 650px;
+  margin: 24px auto 0;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+.hero-orn {
+  margin-top: 36px;
+  font-size: 1.2rem;
+  letter-spacing: 12px;
+  color: var(--gold-secondary);
+  opacity: 0.7;
+}
+
+/* ═══ SECTION STRUCTURES ═══ */
+.section {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 100px 48px;
+}
+
+@media(max-width: 768px) {
+  .section { padding: 60px 24px; }
+}
+
+.sec-head {
+  text-align: center;
+  margin-bottom: 70px;
+}
+
+.sec-head h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 800;
+  color: var(--text-primary);
+  position: relative;
+  display: inline-block;
+  padding-bottom: 16px;
+}
+
+.sec-head h2 span {
+  color: var(--gold-primary);
+}
+
+.sec-head p {
+  color: var(--text-muted);
+  margin-top: 14px;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--border-color) 50%, transparent 100%);
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ═══ HALL OF FAME: PREMIUM MASONRY ARCHITECTURE ═══ */
+.hof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+}
+
+.hof-card {
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(15px);
+  transition: transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+  display: flex;
+  flex-direction: column;
+}
+
+.hof-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--border-hover);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px var(--gold-glow);
+}
+
+.hof-badge {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: var(--gold-primary);
+  color: var(--bg-main);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 30px;
+  letter-spacing: 0.5px;
+  z-index: 10;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+[dir="rtl"] .hof-badge {
+  right: auto;
+  left: 18px;
+}
+
+.card-media {
+  width: 100%;
+  height: 300px;
+  overflow: hidden;
+  background: #000;
+  position: relative;
+}
+
+.card-media img, .card-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  transition: transform 0.8s var(--ease-main);
+}
+
+.hof-card:hover .card-media img {
+  transform: scale(1.05);
+}
+
+.card-body {
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.card-nat {
+  font-size: 0.8rem;
+  color: var(--gold-secondary);
+  font-weight: 600;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-body h3 {
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.card-body p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: auto;
+}
+
+.card-stats {
+  display: flex;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
+}
+
+.stat {
+  flex: 1;
+  text-align: center;
+}
+
+.stat + .stat {
+  border-inline-start: 1px solid var(--border-color);
+}
+
+.stat-num {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--gold-primary);
+  line-height: 1;
+}
+
+.stat-lbl {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* SPECIAL HANDLING: AUDIO HIGHLIGHT CARD */
+.messi-card { cursor: pointer; }
+.audio-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+  padding: 10px 16px;
+  background: rgba(230, 198, 135, 0.05);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  font-size: 0.8rem;
+  color: var(--gold-primary);
+  transition: var(--tr);
+}
+
+.messi-card:hover .audio-hint {
+  border-color: var(--gold-primary);
+  background: rgba(230, 198, 135, 0.1);
+}
+
+.waves { display: flex; gap: 4px; align-items: flex-end; height: 16px; }
+.wb {
+  width: 3px;
+  background: var(--gold-secondary);
+  border-radius: 2px;
+  transform-origin: bottom;
+  animation: waveMotion 1s var(--ease-main) infinite alternate;
+}
+.wb:nth-child(1) { height: 6px; animation-delay: 0.1s; }
+.wb:nth-child(2) { height: 14px; animation-delay: 0.3s; }
+.wb:nth-child(3) { height: 9px; animation-delay: 0.2s; }
+.wb:nth-child(4) { height: 12px; animation-delay: 0.4s; }
+
+@keyframes waveMotion {
+  from { transform: scaleY(0.2); }
+  to { transform: scaleY(1); }
+}
+
+@keyframes ambientWave {
+  from { transform: scaleY(0.2); }
+  to { transform: scaleY(1); }
+}
+
+@media(max-width: 1024px) {
+  .hof-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 768px) {
+  .hof-grid { grid-template-columns: 1fr; gap: 30px; }
+}
+
+/* ═══ EXPANDABLE LEGENDS GRID ═══ */
+.leg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.leg-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform var(--tr), border-color var(--tr), box-shadow var(--tr);
+}
+
+.leg-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--border-hover);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+}
+
+.leg-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  object-position: top;
+  display: block;
+  filter: grayscale(20%);
+  transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+.leg-card:hover .leg-img {
+  filter: grayscale(0%);
+  transform: scale(1.03);
+}
+
+.leg-info {
+  padding: 16px;
+  text-align: center;
+}
+
+.leg-name {
+  color: var(--text-primary);
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.leg-ctry {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 300;
+}
+
+.leg-wc {
+  color: var(--gold-primary);
+  font-size: 0.85rem;
+  margin-top: 8px;
+  letter-spacing: 2px;
+}
+
+/* ═══ CINEMATIC MOMENTS CONTAINER ═══ */
+.mom-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+
+.mom-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform var(--tr), border-color var(--tr), box-shadow var(--tr);
+}
+
+.mom-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-hover);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+}
+
+.vid-wrap {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  background: #000;
+  cursor: pointer;
+}
+
+.vid-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.vid-wrap:hover video { opacity: 1; }
+
+.play-ov {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  transition: opacity var(--tr);
+}
+
+.play-ov .btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(5,5,5,0.75);
+  border: 1px solid var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--gold-primary);
+  transition: transform var(--tr), background var(--tr);
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+[dir="rtl"] .play-ov .btn {
+  padding-right: 4px;
+}
+
+.vid-wrap:hover .btn {
+  transform: scale(1.1);
+  background: var(--gold-primary);
+  color: var(--bg-main);
+  box-shadow: 0 0 25px var(--gold-glow);
+}
+
+.vid-wrap.playing .play-ov {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vid-path {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  font-family: monospace;
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.mom-info { padding: 24px; }
+.mom-info h4 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.mom-info p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  font-weight: 300;
+}
+.mom-yr {
+  display: inline-block;
+  margin-top: 14px;
+  background: rgba(230, 198, 135, 0.08);
+  color: var(--gold-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(230, 198, 135, 0.2);
+}
+
+@media(max-width: 900px) {
+  .mom-grid { grid-template-columns: 1fr; }
+}
+
+/* ═══ FOOTER EXPO ═══ */
+footer {
+  background: #020202;
+  border-top: 1px solid var(--border-color);
+  text-align: center;
+  padding: 60px 24px;
+}
+
+footer .ft {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 16px;
+  filter: drop-shadow(0 0 10px var(--gold-glow));
+}
+
+footer p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  line-height: 2;
+  font-weight: 300;
+}
+
+footer code {
+  color: var(--gold-secondary);
+  background: rgba(230, 198, 135, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ═══ SCROLL ACCELERATED HARDWARE REVEAL ═══ */
+.rev {
+  opacity: 0;
+  transform: translateY(30px);
+  will-change: transform, opacity;
+  transition: opacity 0.8s var(--ease-main), transform 0.8s var(--ease-main);
+}
+.rev.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.rev.d1 { transition-delay: 0.1s; }
+.rev.d2 { transition-delay: 0.2s; }
+.rev.d3 { transition-delay: 0.3s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div id="screen-lang">
+  <div class="lang-trophy">🏆</div>
+  <h1><span>World Cup Museum</span><br>متحف كأس العالم</h1>
+  <p>Select Gallery Language • اختر لغة المعرض</p>
+  <div class="lang-btns">
+    <button class="lang-btn" onclick="chooseLang('ar')">العربية 🇪🇬</button>
+    <button class="lang-btn" onclick="chooseLang('en')">English 🇬🇧</button>
+  </div>
+</div>
+
+<div id="screen-intro">
+  <div id="ball-wrap">
+    <svg class="ball-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bg" cx="37%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="60%" stop-color="#e2e2e5"/>
+          <stop offset="100%" stop-color="#9da1aa"/>
+        </radialGradient>
+        <radialGradient id="sh" cx="34%" cy="27%" r="28%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="49" fill="url(#bg)"/>
+      <polygon points="50,5 65,17 60,35 40,35 35,17" fill="#111" opacity="0.9"/>
+      <polygon points="50,95 65,83 60,65 40,65 35,83" fill="#111" opacity="0.9"/>
+      <polygon points="90,35 78,23 62,31 62,51 76,58" fill="#111" opacity="0.9"/>
+      <polygon points="10,35 22,23 38,31 38,51 24,58" fill="#111" opacity="0.9"/>
+      <polygon points="90,65 78,77 60,69 58,51 74,43" fill="#111" opacity="0.9"/>
+      <polygon points="10,65 22,77 40,69 42,51 26,43" fill="#111" opacity="0.9"/>
+      <circle cx="38" cy="33" r="14" fill="url(#sh)"/>
+      <circle cx="50" cy="50" r="49" fill="none" stroke="#777" stroke-width="0.5"/>
+    </svg>
+  </div>
+  <div id="flash"></div>
+</div>
+
+<div id="main">
+
+  <nav class="navbar">
+    <a class="nav-brand" href="#top">
+      <span class="nav-trophy">🏆</span>
+      <span class="nav-title" id="nav-title">أساطير كأس العالم</span>
+    </a>
+    <div class="nav-right-container">
+      <ul class="nav-links">
+        <li><a href="#hof"     id="nl-hof">قاعة المشاهير</a></li>
+        <li><a href="#legends" id="nl-leg">الأساطير</a></li>
+        <li><a href="#moments" id="nl-mom">اللحظات</a></li>
+      </ul>
+      <div class="bg-music-widget" id="music-widget" onclick="toggleAmbientMusic()" title="Toggle Background Anthem">
+        <audio id="ambient-audio" loop preload="auto"></audio>
+        <div class="music-wave-bar-container">
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+          <div class="music-bar"></div>
+        </div>
+        <span class="music-widget-text" id="music-widget-text">Mute</span>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <div class="hero-inner">
+      <p class="eyebrow">THE DIGITAL WORLD CUP MUSEUM</p>
+      <h1 class="hero-h1" id="hero-h1">أساطير كأس العالم</h1>
+      <p class="hero-sub" id="hero-sub">رحلة عبر التاريخ — وقصص لن ينساها الزمان</p>
+      <div class="hero-orn">✦ &nbsp; ✦ &nbsp; ✦</div>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <section class="section" id="hof">
+    <div class="sec-head rev">
+      <h2 id="hof-h2">قاعة المشاهير</h2>
+      <p id="hof-sub">أبطال رفعوا الكأس وتركوا بصمة أبدية في التاريخ</p>
+    </div>
+    
+    <div class="hof-grid">
+      <article class="hof-card rev d1">
+        <span class="hof-badge" id="pele-badge">الأسطورة الأولى</span>
+        <div class="card-media">
+          <img src="assets/images/pele.jpg" alt="Pelé">
+        </div>
+        <div class="card-body">
+          <p class="card-nat" id="pele-nat">🇧🇷 البرازيل — Edson Arantes do Nascimento</p>
+          <h3 id="pele-name">بيليه</h3>
+          <p id="pele-desc">الملك الذي أدهش العالم ثلاث مرات. بدأ عام 1958 بعمر 17 وأنهى مسيرته بثلاثة كؤوس، ليكون الوحيد في التاريخ بهذا الإنجاز.</p>
+          <div class="card-stats">
+            <div class="stat"><div class="stat-num">3</div><div class="stat-lbl" id="sl-cups">كؤوس العالم</div></div>
+            <div class="stat"><div class="stat-num">77</div><div class="stat-lbl" id="sl-goals">هدف دولي</div></div>
+            <div class="stat"><div class="stat-num">1270</div><div class="stat-lbl" id="sl-career">هدف مسيرة</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="hof-card rev d2">
+        <span class="hof-badge" id="mar-badge">يد الله</span>
+        <div class="card-media">
+          <video id="mar-video" autoplay loop muted playsinline poster="assets/images/maradona_poster.jpg"></video>
+        </div>
+        <div class="card-body">
+          <p class="card-nat" id="mar-nat">🇦🇷 الأرجنتين</p>
+          <h3 id="mar-name">دييغو مارادونا</h3>
+          <p id="mar-desc">عبقري كرة القدم. في مونديال 1986 سجّل هدف القرن وأضاف "يد الله" الشهيرة، ليقود الأرجنتين للتتويج بالكأس الذهبية.</p>
+          <div class="card-stats">
+            <div class="stat"><div class="stat-num">1</div><div class="stat-lbl">كأس العالم</div></div>
+            <div class="stat"><div class="stat-num">34</div><div class="stat-lbl">هدف دولي</div></div>
+            <div class="stat"><div class="stat-num">1986</div><div class="stat-lbl">مكسيكو</div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="hof-card messi-card rev d3" id="messi-card" tabindex="0"
+               onmouseenter="messiOn()" onmouseleave="messiOff()"
+               onclick="messiOn()" ontouchstart="messiOn()">
+        <span class="hof-badge" id="messi-badge">🐐 الأعظم</span>
+        <div class="card-media">
+          <img src="assets/images/messi_qatar2022.jpg" alt="Lionel Messi">
+        </div>
+        <div class="card-body">
+          <p class="card-nat" id="messi-nat">🇦🇷 الأرجنتين</p>
+          <h3 id="messi-name">ليونيل ميسي</h3>
+          <p id="messi-desc">بعد رحلة طويلة من الصبر، رفع الكأس الذهبية في قطر 2022 وأسدل الستار على جدل الـGOAT بالإجابة الأروع في التاريخ.</p>
+          <div class="card-stats">
+            <div class="stat"><div class="stat-num">1</div><div class="stat-lbl">كأس العالم</div></div>
+            <div class="stat"><div class="stat-num">109</div><div class="stat-lbl">هدف دولي</div></div>
+            <div class="stat"><div class="stat-num">8</div><div class="stat-lbl">كرة ذهبية</div></div>
+          </div>
+          <div class="audio-hint">
+            <div class="waves"><div class="wb"></div><div class="wb"></div><div class="wb"></div><div class="wb"></div></div>
+            <span id="hint-txt">مرّر الماوس لسماع التعليق</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <audio id="messi-audio" preload="none"></audio>
+
+  <div class="divider"></div>
+
+  <section class="section" id="legends">
+    <div class="sec-head rev">
+      <h2 id="leg-h2">أساطير في الذاكرة</h2>
+      <p id="leg-sub">نجوم نقشوا أسماءهم في سجل المونديال</p>
+    </div>
+    <div class="leg-grid" id="leg-grid"></div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="moments">
+    <div class="sec-head rev">
+      <h2 id="mom-h2">لحظات لا تُنسى</h2>
+      <p id="mom-sub">مرّر الماوس على الفيديو ليشتغل</p>
+    </div>
+    <div class="mom-grid" id="mom-grid"></div>
+  </section>
+
+  <footer>
+    <span class="ft">🏆</span>
+    <p id="footer-p">متحف كأس العالم الرقمي — للأغراض التعليمية والترفيهية<br>
+    <small>استبدل ملفات <code>assets/</code> بالصور والفيديوهات الحقيقية</small></p>
+  </footer>
+
+</div>
+
+<script>
+'use strict';
+
+/* ══════════════════════════════════
+   DICTIONARIES & TRANSLATION ENGINE
+══════════════════════════════════ */
+const T = {
+  ar: {
+    dir: 'rtl', lang: 'ar',
+    navTitle: 'أساطير كأس العالم',
+    nl_hof: 'قاعة المشاهير', nl_leg: 'الأساطير', nl_mom: 'اللحظات',
+    heroH1: 'أساطير كأس العالم',
+    heroSub: 'رحلة عبر التاريخ — وقصص لن ينساها الزمان',
+    hofH2: 'قاعة المشاهير', hofSub: 'أبطال رفعوا الكأس وتركوا بصمة أبدية في التاريخ',
+    peleBadge: 'الأسطورة الأولى', peleName: 'بيليه',
+    peleNat: '🇧🇷 البرازيل — إيدسون أرانتيس دو ناسيمينتو',
+    peleDesc: 'الملك الذي أدهش العالم ثلاث مرات. بدأ عام 1958 بعمر 17 وأنهى مسيرته بثلاثة كؤوس، ليكون الوحيد في التاريخ بهذا الإنجاز.',
+    slCups: 'كؤوس العالم', slGoals: 'هدف دولي', slCareer: 'هدف مسيرة',
+    marBadge: 'يد الله', marName: 'دييغو مارادونا', marNat: '🇦🇷 الأرجنتين',
+    marDesc: 'عبقري كرة القدم. في مونديال 1986 سجّل هدف القرن وأضاف "يد الله" الشهيرة، ليقود الأرجنتين للتتويج بالكأس الذهبية.',
+    messiBadge: '🐐 الأعظم', messiName: 'ليونيل ميسي', messiNat: '🇦🇷 الأرجنتين',
+    messiDesc: 'بعد رحلة طويلة من الصبر، رفع الكأس الذهبية في قطر 2022 وأسدل الستار على جدل الـGOAT بالإجابة الأروع في التاريخ.',
+    hintTxt: '🎙️ مرّر الماوس لسماع الشوالي',
+    audioSrc: 'assets/audio/messi_ar.mp3',
+    legH2: 'أساطير في الذاكرة', legSub: 'نجوم نقشوا أسماءهم في سجل المونديال',
+    momH2: 'لحظات لا تُنسى', momSub: 'مرّر الماوس على الفيديو ليشتغل',
+    footerP: 'متحف كأس العالم الرقمي — للأغراض التعليمية والترفيهية',
+    muteTxt: 'كتم الصوت', playTxt: 'تشغيل الأغنية'
+  },
+  en: {
+    dir: 'ltr', lang: 'en',
+    navTitle: 'World Cup Legends',
+    nl_hof: 'Hall of Fame', nl_leg: 'Legends', nl_mom: 'Moments',
+    heroH1: 'World Cup Legends',
+    heroSub: 'A journey through history — stories the world will never forget',
+    hofH2: 'Hall of Fame', hofSub: 'Champions who lifted the trophy and changed football forever',
+    peleBadge: 'The King', peleName: 'Pelé',
+    peleNat: '🇧🇷 Brazil — Edson Arantes do Nascimento',
+    peleDesc: 'The King who mesmerized the world three times. He debuted at 17 in 1958 and is the only player in history to win three World Cups.',
+    slCups: 'World Cups', slGoals: "Int'l Goals", slCareer: 'Career Goals',
+    marBadge: 'Hand of God', marName: 'Diego Maradona', marNat: '🇦🇷 Argentina',
+    marDesc: 'Footballing genius. In 1986 he scored the Goal of the Century against England — and added the Hand of God — to lead Argentina to glory.',
+    messiBadge: '🐐 The GOAT', messiName: 'Lionel Messi', messiNat: '🇦🇷 Argentina',
+    messiDesc: 'After a lifelong quest, he finally lifted the golden trophy in Qatar 2022, cementing his place as the greatest footballer of all time.',
+    hintTxt: '🎙️ Hover to hear Peter Drury',
+    audioSrc: 'assets/audio/messi_en.mp3',
+    legH2: 'Legends of the Game', legSub: 'Stars who carved their names into World Cup history',
+    momH2: 'Unforgettable Moments', momSub: 'Hover over a clip to play it',
+    footerP: 'Digital World Cup Museum — for educational and entertainment purposes',
+    muteTxt: 'Mute', playTxt: 'Play Anthem'
+  }
+};
+
+const LEGS = {
+  ar: [
+    { img: 'cr7.jpg', name: 'رونالدو CR7', ctry: '🇵🇹 البرتغال', wc: 0 },
+    { img: 'r9.jpg', name: 'الظاهرة R9', ctry: '🇧🇷 البرازيل', wc: 2 },
+    { img: 'zidane.jpg', name: 'زيدان', ctry: '🇫🇷 فرنسا', wc: 1, note: 'لقطة النطحة' },
+    { img: 'mbappe.jpg', name: 'مبابي', ctry: '🇫🇷 فرنسا', wc: 1 },
+    { img: 'neymar.jpg', name: 'نيمار', ctry: '🇧🇷 البرازيل', wc: 0 },
+    { img: 'iniesta.jpg', name: 'إنييستا', ctry: '🇪🇸 إسبانيا', wc: 1 },
+    { img: 'xavi.jpg', name: 'تشافي', ctry: '🇪🇸 إسبانيا', wc: 1 },
+    { img: 'salah.jpg', name: 'محمد صلاح', ctry: '🇪🇬 مصر', wc: 0 },
+    { img: 'yamal.jpg', name: 'لامين يمال', ctry: '🇪🇸 إسبانيا', wc: 0, note: 'نجم صاعد' },
+    { img: 'haaland.jpg', name: 'هالاند', ctry: '🇳🇴 النرويج', wc: 0 }
+  ],
+  en: [
+    { img: 'cr7.jpg', name: 'Cristiano Ronaldo', ctry: '🇵🇹 Portugal', wc: 0 },
+    { img: 'r9.jpg', name: 'Ronaldo R9', ctry: '🇧🇷 Brazil', wc: 2 },
+    { img: 'zidane.jpg', name: 'Zidane', ctry: '🇫🇷 France', wc: 1, note: 'The headbutt' },
+    { img: 'mbappe.jpg', name: 'Kylian Mbappé', ctry: '🇫🇷 France', wc: 1 },
+    { img: 'neymar.jpg', name: 'Neymar Jr.', ctry: '🇧🇷 Brazil', wc: 0 },
+    { img: 'iniesta.jpg', name: 'Andrés Iniesta', ctry: '🇪🇸 Spain', wc: 1 },
+    { img: 'xavi.jpg', name: 'Xavi Hernández', ctry: '🇪🇸 Spain', wc: 1 },
+    { img: 'salah.jpg', name: 'Mohamed Salah', ctry: '🇪🇬 Egypt', wc: 0 },
+    { img: 'yamal.jpg', name: 'Lamine Yamal', ctry: '🇪🇸 Spain', wc: 0, note: 'Rising star' },
+    { img: 'haaland.jpg', name: 'Erling Haaland', ctry: '🇳🇴 Norway', wc: 0 }
+  ]
+};
+
+const MOMS = {
+  ar: [
+    { src: 'assets/videos/gotze_2014.mp4', title: 'هدف غيتزه — نهائي 2014', desc: 'في الوقت الإضافي، استقبل غيتزه الكرة بصدره وأطلقها في الشبكة. ألمانيا بطلة.', yr: '2014' },
+    { src: 'assets/videos/casillas_2010.mp4', title: 'تصدي كاسياس — نهائي 2010', desc: 'الحراسة الخارقة التي أنقذت إسبانيا وحفظت الكأس لـ"القديس إيكر".', yr: '2010' },
+    { src: 'assets/videos/martinez_2022.mp4', title: 'تصديات مارتينيز — نهائي 2022', desc: 'إيميليانو مارتينيز يتحول لبطل ضربات الترجيح بتصديين لا يُنسيان.', yr: '2022' },
+    { src: 'assets/videos/messi_croatia.mp4', title: 'هدف ميسي ضد كرواتيا — 2022', desc: 'ميسي يخترق الدفاع الكرواتي في نصف النهائي بهدف استثنائي يستحق الذهب.', yr: '2022' }
+  ],
+  en: [
+    { src: 'assets/videos/gotze_2014.mp4', title: "Götze's Goal — 2014 Final", desc: 'Extra-time magic. Götze trapped it with his chest and slotted it home. Germany, champions.', yr: '2014' },
+    { src: 'assets/videos/casillas_2010.mp4', title: 'Casillas Save — 2010 Final', desc: "Iker's incredible stop that kept Spain's dream alive and secured the World Cup.", yr: '2010' },
+    { src: 'assets/videos/martinez_2022.mp4', title: 'Martínez Saves — 2022 Final', desc: 'Emiliano Martínez turned shootout hero with two unforgettable saves.', yr: '2022' },
+    { src: 'assets/videos/messi_croatia.mp4', title: 'Messi vs Croatia — 2022 Semi', desc: 'Messi waltzed through the Croatian defence with a solo goal worth framing.', yr: '2022' }
+  ]
+};
+
+let lang = 'ar';
+const audioEl = document.getElementById('messi-audio');
+const ambientEl = document.getElementById('ambient-audio');
+
+/* ══════════════════════════════════
+   INTERACTION & AUDIO CONTROLLERS
+══════════════════════════════════ */
+function chooseLang(selectedLang) {
+  lang = selectedLang;
+  
+  const screenLang = document.getElementById('screen-lang');
+  screenLang.style.transition = 'opacity 0.4s ease, visibility 0.4s';
+  screenLang.style.opacity = '0';
+  setTimeout(() => {
+    screenLang.style.display = 'none';
+  }, 400);
+
+  const intro = document.getElementById('screen-intro');
+  intro.classList.add('active');
+
+  const ball = document.getElementById('ball-wrap');
+  const flash = document.getElementById('flash');
+  
+  void ball.offsetWidth; 
+  ball.classList.add('go');
+  flash.classList.add('run');
+
+
+  // Attempt to autoplay the gallery anthem (requires user interaction in many browsers)
+  // Keep the URL as a placeholder; you can replace it with a local mp3 later.
+  ambientEl.src = 'assets/audio/waka_waka.mp3';
+  ambientEl.volume = 0.20;
+
+  ambientEl.play()
+    .then(() => {
+      document.getElementById('music-widget')
+              ?.classList.add('playing');
+      updateMusicWidgetText();
+    })
+    .catch(err => {
+      console.log("Background music error:", err);
+    });
+
+  setTimeout(launchMuseum, 1900);
+}
+
+function launchMuseum() {
+  document.getElementById('screen-intro').style.display = 'none';
+  const data = T[lang];
+  
+  document.documentElement.lang = data.lang;
+  document.documentElement.dir  = data.dir;
+
+  applyTranslations(data);
+  buildLegendsGrid(lang);
+  buildMomentsGrid(lang);
+  updateMusicWidgetText();
+
+  const mainContainer = document.getElementById('main');
+  mainContainer.classList.add('show');
+
+  audioEl.src = data.audioSrc;
+  // Autoplay ambient music on language selection (some browsers may block without user gesture)
+  // If autoplay is blocked, the user can still press the widget to start.
+  ambientEl.volume = 0.25;
+  ambientEl.play().then(() => {
+    const widget = document.getElementById('music-widget');
+    if (widget) widget.classList.add('playing');
+    updateMusicWidgetText();
+  }).catch(() => {
+    const widget = document.getElementById('music-widget');
+    if (widget) widget.classList.remove('playing');
+    updateMusicWidgetText();
+  });
+  audioEl.load();
+
+  // Scroll Progress Engine Tracker
+  const progressLine = document.getElementById('progress');
+  window.addEventListener('scroll', () => {
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const currentProgress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+    if (progressLine) progressLine.style.width = currentProgress + '%';
+  }, { passive: true });
+
+  initScrollReveal();
+}
+
+function applyTranslations(t) {
+  const setTxt = (id, val) => { const el = document.getElementById(id); if(el) el.textContent = val; };
+  setTxt('nav-title', t.navTitle); 
+  setTxt('nl-hof', t.nl_hof); 
+  setTxt('nl-leg', t.nl_leg); 
+  setTxt('nl-mom', t.nl_mom);
+  setTxt('hero-h1', t.heroH1); 
+  setTxt('hero-sub', t.heroSub);
+  setTxt('hof-h2', t.hofH2); 
+  setTxt('hof-sub', t.hofSub);
+  setTxt('pele-badge', t.peleBadge); 
+  setTxt('pele-name', t.peleName);
+  setTxt('pele-nat', t.peleNat); 
+  setTxt('pele-desc', t.peleDesc);
+  setTxt('sl-cups', t.slCups); 
+  setTxt('sl-goals', t.slGoals); 
+  setTxt('sl-career', t.slCareer);
+  setTxt('mar-badge', t.marBadge); 
+  setTxt('mar-name', t.marName); 
+  setTxt('mar-nat', t.marNat); 
+  setTxt('mar-desc', t.marDesc);
+  setTxt('messi-badge', t.messiBadge); 
+  setTxt('messi-name', t.messiName);
+  setTxt('messi-nat', t.messiNat); 
+  setTxt('messi-desc', t.messiDesc);
+  setTxt('hint-txt', t.hintTxt);
+  setTxt('leg-h2', t.legH2); 
+  setTxt('leg-sub', t.legSub);
+  setTxt('mom-h2', t.momH2); 
+  setTxt('mom-sub', t.momSub);
+  setTxt('footer-p', t.footerP);
+  
+  const marVid = document.getElementById('mar-video');
+  if (marVid) {
+    marVid.src = "assets/videos/maradona_god.mp4";
+    marVid.load();
+  }
+}
+
+function toggleAmbientMusic() {
+  const widget = document.getElementById('music-widget');
+  if (!ambientEl) return;
+  if (ambientEl.paused) {
+    ambientEl.play();
+    if (widget) widget.classList.add('playing');
+  } else {
+    ambientEl.pause();
+    if (widget) widget.classList.remove('playing');
+  }
+  updateMusicWidgetText();
+}
+
+function updateMusicWidgetText() {
+  const txtEl = document.getElementById('music-widget-text');
+  if (!txtEl) return;
+  if (ambientEl.paused) {
+    txtEl.textContent = T[lang].playTxt;
+  } else {
+    txtEl.textContent = T[lang].muteTxt;
+  }
+}
+
+function buildLegendsGrid(l) {
+  const grid = document.getElementById('leg-grid');
+  if (!grid) return;
+  grid.innerHTML = LEGS[l].map((player, idx) => {
+    const stars = player.wc > 0 ? `<div class="leg-wc">${'★'.repeat(player.wc)}</div>` : '';
+    const note = player.note ? `<div style="font-size:0.7rem; color:var(--gold-secondary); margin-top:4px; font-style:italic;">${player.note}</div>` : '';
+    const delayClass = ['','d1','d2'][idx % 3];
+    return `
+      <div class="leg-card rev ${delayClass}">
+        <img class="leg-img" src="assets/images/${player.img}" alt="${player.name}" loading="lazy">
+        <div class="leg-info">
+          <div class="leg-name">${player.name}</div>
+          <div class="leg-ctry">${player.ctry}</div>
+          ${stars}${note}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function buildMomentsGrid(l) {
+  const grid = document.getElementById('mom-grid');
+  if (!grid) return;
+  grid.innerHTML = MOMS[l].map((mom, idx) => {
+    const delayClass = ['','d1','d2'][idx % 3];
+    return `
+      <article class="mom-card rev ${delayClass}">
+        <div class="vid-wrap" onmouseenter="vidPlay(this)" onmouseleave="vidPause(this)">
+          <video preload="none" muted playsinline loop>
+            <source src="${mom.src}" type="video/mp4">
+          </video>
+          <div class="play-ov">
+            <div class="btn">▶</div>
+          </div>
+          <div class="vid-path">${mom.src}</div>
+        </div>
+        <div class="mom-info">
+          <h4>${mom.title}</h4>
+          <p>${mom.desc}</p>
+          <span class="mom-yr">${mom.yr}</span>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════
+   VIDEO / AUDIO MEDIA CONTEXTS
+══════════════════════════════════ */
+function vidPlay(wrapper) {
+  const video = wrapper.querySelector('video');
+  if (!video) return;
+  
+  // Duck background music out slightly lower when previewing specific video match soundscapes
+  ambientEl.volume = 0.08;
+  video.play().then(() => wrapper.classList.add('playing')).catch(() => {});
+}
+
+function vidPause(wrapper) {
+  const video = wrapper.querySelector('video');
+  if (!video) return;
+  video.pause();
+  video.currentTime = 0;
+  wrapper.classList.remove('playing');
+  
+  // Return background music back to normal gallery lounge volume levels
+  if (!ambientEl.paused) ambientEl.volume = 0.25;
+}
+
+function messiOn() {
+
+  if (!audioEl.src) return;
+
+  if (!ambientEl.paused) {
+    ambientEl.volume = 0.03;
+  }
+
+  audioEl.pause();
+  audioEl.currentTime = 0;
+
+  audioEl.play().catch(err => {
+    console.log(err);
+  });
+}
+
+function messiOff() {
+  audioEl.pause();
+  audioEl.currentTime = 0;
+
+  if (!ambientEl.paused) {
+    ambientEl.volume = 0.20;
+  }
+}
+
+/* ══════════════════════════════════
+   GEOMETRIC HARDWARE INTERSECTION
+══════════════════════════════════ */
+function initScrollReveal() {
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('.rev').forEach(el => el.classList.add('in'));
+    return;
+  }
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.05, rootMargin: "0px 0px -40px 0px" });
+
+  document.querySelectorAll('.rev').forEach(el => revealObserver.observe(el));
+
+  const structuralMutation = new MutationObserver(() => {
+    document.querySelectorAll('.rev:not(.in)').forEach(el => revealObserver.observe(el));
+  });
+  
+  structuralMutation.observe(document.getElementById('leg-grid'), { childList: true });
+  structuralMutation.observe(document.getElementById('mom-grid'), { childList: true });
+}
+</script>
+</body>
+</html>
